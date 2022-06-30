@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/user_item_avatar"
+        android:id="@+id/user_avatar_image_view"
         android:layout_width="@dimen/avatar_image_width"
         android:layout_height="@dimen/avatar_image_height"
         android:layout_margin="@dimen/avatar_image_margin"
@@ -13,27 +13,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/user_item_login"
+        android:id="@+id/user_login_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/item_margin_half"
         android:layout_marginTop="@dimen/item_margin_standart"
         android:textSize="@dimen/user_login_tex_size"
-        android:layout_marginHorizontal="@dimen/item_margin_half"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/user_item_avatar"
+        app:layout_constraintStart_toEndOf="@id/user_avatar_image_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/user_item_id"
+        android:id="@+id/user_id_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/user_login_id_size"
         android:layout_marginHorizontal="@dimen/item_margin_half"
         android:layout_marginTop="@dimen/item_margin_standart"
+        android:textSize="@dimen/user_login_id_size"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/user_item_avatar"
-        app:layout_constraintTop_toBottomOf="@id/user_item_login"
-        />
+        app:layout_constraintStart_toEndOf="@id/user_avatar_image_view"
+        app:layout_constraintTop_toBottomOf="@id/user_login_text_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

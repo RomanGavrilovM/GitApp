@@ -1,4 +1,4 @@
-package ru.example.gitapp
+package ru.example.gitapp.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
