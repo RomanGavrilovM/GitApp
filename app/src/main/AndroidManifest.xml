@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GitApp">
         <activity
-            android:name=".ui.user.UserDetailActivity"
+            android:name=".ui.profile.ProfileActivity"
             android:exported="false"
             android:parentActivityName=".ui.MainActivity">
             <meta-data

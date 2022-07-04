@@ -1,11 +1,13 @@
-package ru.example.gitapp.ui
+package ru.example.gitapp.ui.users
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import ru.example.gitapp.R
-import ru.example.gitapp.domain.UserEntity
 import ru.example.gitapp.databinding.ItemUserBinding
+import ru.example.gitapp.domain.UserEntity
+import java.io.File
 
 class UserViewHolder(
     parent: ViewGroup,
@@ -22,8 +24,11 @@ class UserViewHolder(
     }
 
     fun bind(userEntity: UserEntity) {
-        binding.userItemAvatar.load(userEntity.avatarUrl)
-        binding.userItemId.text = userEntity.id.toString()
-        binding.userItemLogin.text = userEntity.login
+        if (userEntity.avatarUrl.contains("http")) {
+            binding.userAvatarImageView.load(userEntity.avatarUrl)
+        } else binding.userAvatarImageView.load(File(userEntity.avatarUrl))
+
+        binding.userIdTextView.text = userEntity.id.toString()
+        binding.userLoginTextView.text = userEntity.login
     }
 }

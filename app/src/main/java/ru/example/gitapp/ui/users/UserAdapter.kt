@@ -1,4 +1,4 @@
-package ru.example.gitapp.ui
+package ru.example.gitapp.ui.users
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
