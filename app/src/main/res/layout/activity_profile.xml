@@ -5,54 +5,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    tools:context=".ui.user.UserDetailActivity">
+    tools:context=".ui.profile.ProfileActivity">
 
     <ImageView
-        android:id="@+id/user_detail_activity_avatar"
+        android:id="@+id/profile_avatar_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/user_detail_activity_user_blank"
+        app:layout_constraintBottom_toTopOf="@id/profile_blank_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/user_detail_activity_user_blank"
+        android:id="@+id/profile_blank_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_detail_activity_avatar" />
+        app:layout_constraintTop_toBottomOf="@id/profile_avatar_image_view" />
 
     <TextView
-        android:id="@+id/user_detail_activity_login"
+        android:id="@+id/profile_login_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-        app:layout_constraintTop_toTopOf="@id/user_detail_activity_user_blank"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/profile_blank_view"
         tools:text="Login" />
 
     <TextView
-        android:id="@+id/user_detail_activity_id"
+        android:id="@+id/profile_id_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintTop_toBottomOf="@id/user_detail_activity_login"
-        app:layout_constraintBottom_toTopOf="@id/user_detail_activity_type"
+        app:layout_constraintBottom_toTopOf="@id/profile_type_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="ID"/>
+        app:layout_constraintTop_toBottomOf="@id/profile_login_text_view"
+        tools:text="ID" />
+
 
     <TextView
-        android:id="@+id/user_detail_activity_type"
+        android:id="@+id/profile_type_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintTop_toBottomOf="@id/user_detail_activity_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Type"/>
+        app:layout_constraintTop_toBottomOf="@id/profile_id_text_view"
+        tools:text="Type" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
