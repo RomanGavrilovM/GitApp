@@ -7,7 +7,6 @@ import io.reactivex.rxjava3.core.Observable
 
 interface UserContract {
 
-
     interface ViewModel {
         val usersLiveData: Observable<List<UserEntity>>
         val errorLiveData: Observable<Throwable>

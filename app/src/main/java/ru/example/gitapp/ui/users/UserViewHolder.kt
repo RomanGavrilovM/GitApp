@@ -16,7 +16,6 @@ class UserViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
 ) {
     private val binding = ItemUserBinding.bind(itemView)
-
     init {
         itemView.setOnClickListener {
             onItemClick(adapterPosition)
@@ -24,9 +23,6 @@ class UserViewHolder(
     }
 
     fun bind(userEntity: UserEntity) {
-        if (userEntity.avatarUrl.contains("http")) {
-            binding.userAvatarImageView.load(userEntity.avatarUrl)
-        } else binding.userAvatarImageView.load(File(userEntity.avatarUrl))
 
         binding.userIdTextView.text = userEntity.id.toString()
         binding.userLoginTextView.text = userEntity.login

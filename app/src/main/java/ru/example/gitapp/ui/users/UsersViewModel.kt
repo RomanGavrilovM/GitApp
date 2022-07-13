@@ -64,7 +64,6 @@ class UsersViewModel(
             db.userDao().addUserList(list.map { it.convertUserEntityToDAO() })
         }.subscribeOn(Schedulers.io())
             .subscribe()
-
     }
 
     override fun onSaveImage(userList: List<UserEntity>) {
