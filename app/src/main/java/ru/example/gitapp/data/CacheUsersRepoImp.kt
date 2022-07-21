@@ -4,12 +4,13 @@ import ru.example.gitapp.domain.UserEntity
 import ru.example.gitapp.domain.UserRepo
 import io.reactivex.rxjava3.core.Single
 
-class CacheUsersRepoImp : UserRepo {
-    override fun getUsers(onSuccess: (List<UserEntity>) -> Unit, onError: ((Throwable) -> Unit)?) {
-        TODO("Not yet implemented")
-    }
-
+class CacheUsersRepoImp(
+    private val localRepo: UserRepo,
+    private val remoteRepo: UserRepo
+) : UserRepo {
     override fun getUsers(): Single<List<UserEntity>> {
-        TODO("Not yet implemented")
+        return Single.concat(localRepo.getUsers(), remoteRepo.getUsers())
+            .filter { t: List<UserEntity> -> t.isNotEmpty() }
+            .first(mutableListOf())
     }
 }

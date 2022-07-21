@@ -17,6 +17,7 @@ interface UserContract {
         fun onRefresh()
         fun onUserClick(userEntity: UserEntity)
         fun onNewData(db: UserDatabase, list: List<UserEntity>)
+        fun compareData(db: UserDatabase, list: List<UserEntity>)
         fun onSaveImage(userList: List<UserEntity>)
     }
 

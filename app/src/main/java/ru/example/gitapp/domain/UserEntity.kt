@@ -1,6 +1,5 @@
 package ru.example.gitapp.domain
 
-import ru.example.gitapp.data.room.RoomUserEntity
 
 data class UserEntity(
 

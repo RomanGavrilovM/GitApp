@@ -1,9 +1,10 @@
 package ru.example.gitapp.ui.users
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ru.example.gitapp.data.retrofit.NetUserRepoImp
+import androidx.lifecycle.ViewModel
 import ru.example.gitapp.data.room.UserDatabase
 import ru.example.gitapp.domain.UserEntity
 import ru.example.gitapp.domain.UserRepo
@@ -20,9 +21,8 @@ import io.reactivex.rxjava3.subjects.Subject
 
 class UsersViewModel(
     private val repository: UserRepo
-) : UserContract.ViewModel {
+) : UserContract.ViewModel, ViewModel() {
 
-    private val remoteUserRepo by lazy { NetUserRepoImp() }
 
     override val usersLiveData: Observable<List<UserEntity>> = BehaviorSubject.create()
     override val errorLiveData: Observable<Throwable> = BehaviorSubject.create()
@@ -42,12 +42,8 @@ class UsersViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = { userList ->
-                    if (userList.isNotEmpty()) {
-                        progressLiveData.toMutable().onNext(false)
-                        usersLiveData.toMutable().onNext(userList)
-                    } else {
-                        loadData()
-                    }
+                    progressLiveData.toMutable().onNext(false)
+                    usersLiveData.toMutable().onNext(userList)
                 },
                 onError = { error ->
                     progressLiveData.toMutable().onNext(false)
@@ -62,9 +58,35 @@ class UsersViewModel(
 
     override fun onNewData(db: UserDatabase, list: List<UserEntity>) {
         Completable.fromRunnable {
+            Log.d("###", "add new data to db")
             db.userDao().addUserList(list.map { convertUserEntityToDAO(it) })
         }.subscribeOn(Schedulers.io())
             .subscribe()
+    }
+
+    override fun compareData(db: UserDatabase, list: List<UserEntity>) {
+        Log.d("###", "compare list")
+        Completable.fromRunnable {
+            db.userDao().getAllUsers().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onSuccess = { userList ->
+                        if (userList.map {
+                                it.convertDaoToUserEntity()
+                            }.equals(list)) {
+                            Log.d("###", "list are Equals nothing to update")
+                        } else {
+                            Log.d("###", "list are not Equals send data to live data")
+                            usersNetUpdateLiveData.toMutable().onNext(list)
+                        }
+
+                    },
+                    onError = { error ->
+                    }
+                )
+        }.subscribeOn(Schedulers.io())
+            .subscribe()
+
     }
 
     override fun onSaveImage(userList: List<UserEntity>) {
@@ -77,26 +99,6 @@ class UsersViewModel(
         }.subscribeOn(Schedulers.io())
             .subscribe()
     }
-
-    private fun loadData() {
-        progressLiveData.toMutable().onNext(true)
-        remoteUserRepo.getUsers()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(
-                onSuccess = { list ->
-                    progressLiveData.toMutable().onNext(false)
-
-                    usersNetUpdateLiveData.toMutable().onNext(list)
-
-                },
-                onError = { error ->
-                    progressLiveData.toMutable().onNext(false)
-                    errorLiveData.toMutable().onNext(error)
-                }
-            )
-
-    }
-
 
     private fun <T> LiveData<T>.toMutable(): MutableLiveData<T> {
         return this as? MutableLiveData<T>

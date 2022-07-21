@@ -2,7 +2,6 @@ package ru.example.gitapp.data.retrofit
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import ru.example.gitapp.data.room.RoomUserEntity
 import ru.example.gitapp.domain.UserEntity
 import kotlinx.parcelize.Parcelize
 

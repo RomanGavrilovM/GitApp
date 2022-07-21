@@ -13,12 +13,13 @@ import ru.example.gitapp.databinding.ActivityMainBinding
 import ru.example.gitapp.domain.UserEntity
 import ru.example.gitapp.ui.profile.ProfileActivity
 import ru.example.gitapp.ui.users.UserAdapter
-import ru.example.gitapp.ui.users.UserContract
 import ru.example.gitapp.ui.users.UsersViewModel
 import ru.example.gitapp.utils.getImagePath
 import ru.example.gitapp.utils.observableClickListener
 import ru.example.gitapp.utils.onLoadBitmap
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val DETAIL_USER = "DETAIL_USER"
 
@@ -29,7 +30,9 @@ class MainActivity : AppCompatActivity() {
         userViewModel.onUserClick(user)
     }
 
-    private lateinit var userViewModel: UserContract.ViewModel
+    private val database: UserDatabase by inject()
+
+    private val userViewModel: UsersViewModel by viewModel()
 
     private val viewModelDisposable = CompositeDisposable()
 
@@ -39,15 +42,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initViews()
         initViewModel()
-
     }
-
-
     override fun onDestroy() {
         viewModelDisposable.dispose()
         super.onDestroy()
     }
-
     private fun openProfileScreen(userEntity: UserEntity) {
         val intent = Intent(this.app, ProfileActivity::class.java).apply {
             putExtra(DETAIL_USER, UserEntityDto.convertUserEntityToDto(userEntity))
@@ -55,45 +54,34 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun getViewModel(): UserContract.ViewModel {
-        return lastCustomNonConfigurationInstance as? UserContract.ViewModel
-            ?: UsersViewModel(app.userRepo)
-    }
-
-    override fun onRetainCustomNonConfigurationInstance(): UserContract.ViewModel {
-        return userViewModel
-    }
-
     private fun initViews() {
-        /*binding.mainActivityRefreshButton.setOnClickListener {
-            userViewModel.onRefresh()
-        }*/
         initRecycleView()
         showProgress(false)
-
     }
 
     private fun initViewModel() {
-        userViewModel = getViewModel()
-
         viewModelDisposable.addAll(
 
             userViewModel.progressLiveData.subscribe { showProgress(it) },
             userViewModel.usersLiveData.subscribe {
                 showUsers(it)
-
+                checkData(it)
             },
             userViewModel.usersNetUpdateLiveData.subscribe {
-                showUsers(it)
                 setCacheData(it)
             },
             userViewModel.errorLiveData.subscribe { showError(it) },
             userViewModel.openProfileLiveData.subscribe { openProfileScreen(it) },
-
             binding.mainActivityRefreshButton.observableClickListener().subscribe {
                 userViewModel.onRefresh()
             }
         )
+    }
+    private fun checkData(userList: List<UserEntity>) {
+        userList.let {
+            userViewModel.compareData(database, userList)
+        }
+
     }
 
 
@@ -117,31 +105,23 @@ class MainActivity : AppCompatActivity() {
                 )
                 tmpUserList.add(updatedUser)
             }
-            updateLocalRepo(app.database, tmpUserList)
+            updateLocalRepo(database, tmpUserList)
         }
 
     }
-
-
     private fun updateLocalRepo(db: UserDatabase, userList: List<UserEntity>) {
         userViewModel.onNewData(db, userList)
     }
-
-
     private fun initRecycleView() {
         binding.mainActivityRecycle.layoutManager = LinearLayoutManager(this)
         binding.mainActivityRecycle.adapter = adapter
     }
-
-
     private fun showUsers(users: List<UserEntity>) {
         adapter.setData(users)
     }
-
     private fun showError(throwable: Throwable) {
         Snackbar.make(binding.root, throwable.message.toString(), Snackbar.LENGTH_SHORT).show()
     }
-
     private fun showProgress(inProgress: Boolean) {
         binding.mainActivityProgressBar.isVisible = inProgress
         binding.mainActivityRecycle.isVisible = !inProgress

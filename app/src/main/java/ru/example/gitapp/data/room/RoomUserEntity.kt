@@ -2,7 +2,6 @@ package ru.example.gitapp.data.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.example.gitapp.data.retrofit.UserEntityDto
 import ru.example.gitapp.domain.UserEntity
 
 @Entity
