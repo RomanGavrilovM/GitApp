@@ -7,6 +7,7 @@ import ru.example.gitapp.data.retrofit.NetUserRepoImp
 import ru.example.gitapp.data.room.UserDatabase
 import ru.example.gitapp.domain.UserEntity
 import ru.example.gitapp.domain.UserRepo
+import ru.example.gitapp.utils.convertUserEntityToDAO
 import ru.example.gitapp.utils.downloadImageBitmap
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
@@ -61,7 +62,7 @@ class UsersViewModel(
 
     override fun onNewData(db: UserDatabase, list: List<UserEntity>) {
         Completable.fromRunnable {
-            db.userDao().addUserList(list.map { it.convertUserEntityToDAO() })
+            db.userDao().addUserList(list.map { convertUserEntityToDAO(it) })
         }.subscribeOn(Schedulers.io())
             .subscribe()
     }

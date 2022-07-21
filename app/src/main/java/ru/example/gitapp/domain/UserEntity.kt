@@ -14,6 +14,3 @@ data class UserEntity(
 
     val siteAdmin: Boolean
 )
-{
-    fun convertUserEntityToDAO() = RoomUserEntity(login, id, avatarUrl, type, siteAdmin)
-}

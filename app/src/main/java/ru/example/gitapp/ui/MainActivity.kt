@@ -16,6 +16,7 @@ import ru.example.gitapp.ui.users.UserAdapter
 import ru.example.gitapp.ui.users.UserContract
 import ru.example.gitapp.ui.users.UsersViewModel
 import ru.example.gitapp.utils.getImagePath
+import ru.example.gitapp.utils.observableClickListener
 import ru.example.gitapp.utils.onLoadBitmap
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
@@ -64,9 +65,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        binding.mainActivityRefreshButton.setOnClickListener {
+        /*binding.mainActivityRefreshButton.setOnClickListener {
             userViewModel.onRefresh()
-        }
+        }*/
         initRecycleView()
         showProgress(false)
 
@@ -80,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             userViewModel.progressLiveData.subscribe { showProgress(it) },
             userViewModel.usersLiveData.subscribe {
                 showUsers(it)
-                // test(it)
+
             },
             userViewModel.usersNetUpdateLiveData.subscribe {
                 showUsers(it)
@@ -89,7 +90,10 @@ class MainActivity : AppCompatActivity() {
             userViewModel.errorLiveData.subscribe { showError(it) },
             userViewModel.openProfileLiveData.subscribe { openProfileScreen(it) },
 
-            )
+            binding.mainActivityRefreshButton.observableClickListener().subscribe {
+                userViewModel.onRefresh()
+            }
+        )
     }
 
 
