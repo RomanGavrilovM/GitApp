@@ -2,21 +2,21 @@ package ru.example.gitapp
 
 import android.app.Application
 import android.content.Context
-import ru.example.gitapp.di.appModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
+import ru.example.gitapp.data.room.UserDatabase
+import ru.example.gitapp.di.AppModule
+import ru.example.gitapp.domain.UserRepo
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
+
+@HiltAndroidApp
 class App : Application() {
-    override fun onCreate() {
-        super.onCreate()
+    @Inject
+    lateinit var database: UserDatabase
 
-        startKoin {
-            androidLogger()
-            androidContext(this@App)
-            modules(appModule)
-        }
-    }
+/*  @AppModule.CacheRepo
+    @Inject
+    lateinit var userRepo: UserRepo*/
 
 }
 

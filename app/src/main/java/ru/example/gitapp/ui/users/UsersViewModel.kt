@@ -6,10 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.example.gitapp.data.room.UserDatabase
+import ru.example.gitapp.di.AppModule
 import ru.example.gitapp.domain.UserEntity
 import ru.example.gitapp.domain.UserRepo
 import ru.example.gitapp.utils.convertUserEntityToDAO
 import ru.example.gitapp.utils.downloadImageBitmap
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
@@ -17,9 +19,12 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import io.reactivex.rxjava3.subjects.Subject
+import javax.inject.Inject
 
 
-class UsersViewModel(
+@HiltViewModel
+class UsersViewModel @Inject constructor(
+    @AppModule.CacheRepo
     private val repository: UserRepo
 ) : UserContract.ViewModel, ViewModel() {
 

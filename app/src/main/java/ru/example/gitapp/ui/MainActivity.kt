@@ -2,6 +2,7 @@ package ru.example.gitapp.ui
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,12 +18,12 @@ import ru.example.gitapp.ui.users.UsersViewModel
 import ru.example.gitapp.utils.getImagePath
 import ru.example.gitapp.utils.observableClickListener
 import ru.example.gitapp.utils.onLoadBitmap
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val DETAIL_USER = "DETAIL_USER"
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
@@ -30,9 +31,7 @@ class MainActivity : AppCompatActivity() {
         userViewModel.onUserClick(user)
     }
 
-    private val database: UserDatabase by inject()
-
-    private val userViewModel: UsersViewModel by viewModel()
+    private val userViewModel: UsersViewModel by viewModels()
 
     private val viewModelDisposable = CompositeDisposable()
 
@@ -40,8 +39,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         initViews()
         initViewModel()
+
     }
     override fun onDestroy() {
         viewModelDisposable.dispose()
@@ -53,15 +54,12 @@ class MainActivity : AppCompatActivity() {
         }
         startActivity(intent)
     }
-
     private fun initViews() {
         initRecycleView()
         showProgress(false)
     }
-
     private fun initViewModel() {
         viewModelDisposable.addAll(
-
             userViewModel.progressLiveData.subscribe { showProgress(it) },
             userViewModel.usersLiveData.subscribe {
                 showUsers(it)
@@ -77,13 +75,13 @@ class MainActivity : AppCompatActivity() {
             }
         )
     }
+
     private fun checkData(userList: List<UserEntity>) {
         userList.let {
-            userViewModel.compareData(database, userList)
+            userViewModel.compareData(app.database, userList)
         }
 
     }
-
 
     fun setCacheData(userList: List<UserEntity>) {
         userViewModel.onSaveImage(userList)
@@ -105,10 +103,11 @@ class MainActivity : AppCompatActivity() {
                 )
                 tmpUserList.add(updatedUser)
             }
-            updateLocalRepo(database, tmpUserList)
+            updateLocalRepo(app.database, tmpUserList)
         }
 
     }
+
     private fun updateLocalRepo(db: UserDatabase, userList: List<UserEntity>) {
         userViewModel.onNewData(db, userList)
     }
