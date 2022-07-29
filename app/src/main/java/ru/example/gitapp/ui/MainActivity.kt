@@ -2,7 +2,6 @@ package ru.example.gitapp.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,26 +11,28 @@ import ru.example.gitapp.data.retrofit.UserEntityDto
 import ru.example.gitapp.data.room.UserDatabase
 import ru.example.gitapp.databinding.ActivityMainBinding
 import ru.example.gitapp.domain.UserEntity
+import ru.example.gitapp.domain.UserRepo
 import ru.example.gitapp.ui.profile.ProfileActivity
 import ru.example.gitapp.ui.users.UserAdapter
+import ru.example.gitapp.ui.users.UserContract
 import ru.example.gitapp.ui.users.UsersViewModel
 import ru.example.gitapp.utils.getImagePath
 import ru.example.gitapp.utils.observableClickListener
 import ru.example.gitapp.utils.onLoadBitmap
-import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 const val DETAIL_USER = "DETAIL_USER"
-
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
     private val adapter = UserAdapter { user ->
         userViewModel.onUserClick(user)
     }
 
-    private val userViewModel: UsersViewModel by viewModels()
+    private lateinit var userViewModel: UserContract.ViewModel
+
+    private val userRepo by lazy { app.di.get(UserRepo::class) }
+
+    private val database by lazy { app.di.get(UserDatabase::class) }
 
     private val viewModelDisposable = CompositeDisposable()
 
@@ -39,10 +40,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         initViews()
         initViewModel()
-
     }
     override fun onDestroy() {
         viewModelDisposable.dispose()
@@ -54,15 +53,26 @@ class MainActivity : AppCompatActivity() {
         }
         startActivity(intent)
     }
+
+    private fun getViewModel(): UserContract.ViewModel {
+        return lastCustomNonConfigurationInstance as? UserContract.ViewModel
+    }
+
+    override fun onRetainCustomNonConfigurationInstance(): UserContract.ViewModel {
+        return userViewModel
+    }
+
     private fun initViews() {
         initRecycleView()
         showProgress(false)
     }
     private fun initViewModel() {
+        userViewModel = getViewModel()
         viewModelDisposable.addAll(
             userViewModel.progressLiveData.subscribe { showProgress(it) },
             userViewModel.usersLiveData.subscribe {
                 showUsers(it)
+                // test(it)
                 checkData(it)
             },
             userViewModel.usersNetUpdateLiveData.subscribe {
@@ -78,10 +88,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkData(userList: List<UserEntity>) {
         userList.let {
-            userViewModel.compareData(app.database, userList)
+            userViewModel.compareData(app.di.get(UserDatabase::class), userList)
         }
 
     }
+
 
     fun setCacheData(userList: List<UserEntity>) {
         userViewModel.onSaveImage(userList)
@@ -103,11 +114,10 @@ class MainActivity : AppCompatActivity() {
                 )
                 tmpUserList.add(updatedUser)
             }
-            updateLocalRepo(app.database, tmpUserList)
+            updateLocalRepo(database, tmpUserList)
         }
 
     }
-
     private fun updateLocalRepo(db: UserDatabase, userList: List<UserEntity>) {
         userViewModel.onNewData(db, userList)
     }
@@ -126,3 +136,4 @@ class MainActivity : AppCompatActivity() {
         binding.mainActivityRecycle.isVisible = !inProgress
     }
 }
+

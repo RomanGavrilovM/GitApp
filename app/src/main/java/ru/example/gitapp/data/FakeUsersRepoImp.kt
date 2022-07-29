@@ -12,5 +12,5 @@ class FakeUsersRepoImp : UserRepo {
         UserEntity("pjhyett", 3, "https://avatars.githubusercontent.com/u/3?v=4", "user", false)
     )
 
-   override fun getUsers(): Single<List<UserEntity>> = Single.just(data)
+    override fun getUsers(): Single<List<UserEntity>> = Single.just(data)
 }

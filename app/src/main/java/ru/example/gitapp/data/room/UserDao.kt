@@ -1,4 +1,4 @@
-package ru.example.gitapp.data.room
+package ru.home.gitapp.data.room
 
 import androidx.room.Dao
 import androidx.room.Insert

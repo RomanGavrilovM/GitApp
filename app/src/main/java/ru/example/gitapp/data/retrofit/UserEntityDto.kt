@@ -9,21 +9,18 @@ import kotlinx.parcelize.Parcelize
 data class UserEntityDto(
     @SerializedName("login")
     val login: String,
-
     @SerializedName("id")
     val id: Long,
-
     @SerializedName("avatar_url")
     val avatarUrl: String,
-
     @SerializedName("type")
     val type: String,
-
     @SerializedName("site_admin")
     val siteAdmin: Boolean
 ) : Parcelable {
 
     fun convertDtoToUserEntity() = UserEntity(login, id, avatarUrl, type, siteAdmin)
+
 
     companion object {
         fun convertUserEntityToDto(userEntity: UserEntity): UserEntityDto {
