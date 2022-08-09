@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GitApp</string>
+    <string name="load_data_buttom">Load Data</string>
 </resources>

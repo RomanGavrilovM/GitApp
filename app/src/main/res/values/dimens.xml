@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="avatar_image_width">72dp</dimen>
+    <dimen name="avatar_image_height">72dp</dimen>
+    <dimen name="avatar_image_margin">10dp</dimen>
+    <dimen name="item_margin_standart">10dp</dimen>
+    <dimen name="item_margin_half">5dp</dimen>
+    <dimen name="user_login_tex_size">22sp</dimen>
+    <dimen name="user_login_id_size">22sp</dimen>
+</resources>
